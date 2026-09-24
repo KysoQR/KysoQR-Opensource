@@ -6,7 +6,7 @@
   "type": "module",
   "description": "KysoQR / XSign — PDF e-signing + verification. Single Next.js app, stateless, no database.",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "next dev",

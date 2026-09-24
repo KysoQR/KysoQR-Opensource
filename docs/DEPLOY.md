@@ -7,7 +7,7 @@ Hướng dẫn deploy `Xsign-Opensource` lên một máy chủ Ubuntu tự quả
 ## 0. Yêu cầu
 
 - SSH vào được máy chủ Ubuntu (20.04/22.04/24.04).
-- Node.js **>= 20** (theo `engines` trong `package.json`).
+- Node.js **>= 22** (theo `engines` trong `package.json` — `pdf.js` cần `Iterator.prototype.join`, chỉ có mặc định từ Node 22 trở lên; Node 20 sẽ lỗi `ReferenceError: Iterator is not defined` khi build).
 - `git`.
 
 ## 1. Cài Node.js + git lần đầu
@@ -17,10 +17,10 @@ ssh ubuntu@<server-ip-or-domain>
 
 sudo apt update && sudo apt install -y git curl
 
-# Node.js 20 LTS qua NodeSource
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Node.js 22 LTS qua NodeSource
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
-node -v   # phải >= 20
+node -v   # phải >= 22
 ```
 
 Tạo user riêng chạy app (không chạy app bằng root):

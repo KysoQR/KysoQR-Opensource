@@ -1,0 +1,69 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Cloudflare Workers build output/cache (npm run cf:build) — generated,
+# never committed, same treatment as .next/ above.
+.open-next/
+.wrangler/
+
+# Env — never commit real secrets. Anything matching .env* is ignored EXCEPT
+# .env.example (placeholders/descriptions only, no real values — see
+# Rule/RULES.md).
+.env*
+!.env.example
+
+# Trust store / certificate / key material some future local testing might
+# drop as separate files (TRUSTED_CA_PEM itself lives inside .env, already
+# covered above — this is defense-in-depth for stray files).
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.cer
+*.der
+# ...except the bundled, intentionally-public root CA files in the trust
+# store itself (see lib/trustStore/roots/README.md) — these must ship with
+# the repo or a fresh clone's trust store is silently incomplete.
+!lib/trustStore/roots/*.crt
+
+# Deploy-tool local config (Vercel CLI etc.) — can carry org/project ids.
+.vercel/
+
+# Test / coverage
+coverage/
+
+# Scratch/test files used while developing locally against CAS sandbox —
+# never real product assets, must never be committed (may contain real
+# documents used for manual testing).
+test-upload.pdf
+*.scratch.*
+
+# Internal planning doc, not meant for the public repo. Rule/RULES.md has no
+# sensitive content and stays tracked normally.
+Plan/Plan refactor.md
+
+# Local Claude Code session state — never project source.
+.claude/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts

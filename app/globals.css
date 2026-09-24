@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+/* Be Vietnam Pro — ported from x-sign-web/src/index.css + public/fonts/. */
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/Be_Vietnam_Pro/BeVietnamPro-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/Be_Vietnam_Pro/BeVietnamPro-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/Be_Vietnam_Pro/BeVietnamPro-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/Be_Vietnam_Pro/BeVietnamPro-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('/fonts/Be_Vietnam_Pro/BeVietnamPro-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+}
+
+/**
+ * Design tokens — ported verbatim from x-sign-web/src/index.css (@theme block).
+ * Same values so components using bg-primary / text-text-main / etc. render
+ * identically to the original product.
+ */
+@theme {
+  --color-primary: #00a85e;
+  --color-primary-strong: #047857;
+
+  --color-text-main: #1f2933;
+  --color-text-strong: #064e3b;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-soft: #9ca3af;
+
+  --color-border-subtle: #d2ead7;
+  --color-surface-soft: #f0fbf4;
+  --color-surface-soft-strong: #e0f2e9;
+  --color-surface-soft-alt: #f9fffb;
+
+  --color-page-bg-from: #f7fff9;
+  --color-page-bg-to: #ecf7ef;
+
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fee2e2;
+  --color-error-text: #b91c1c;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fef3c7;
+  --color-warning-text: #92400e;
+}
+
+html,
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  scrollbar-gutter: stable;
+}
+
+/* Tailwind v4 preflight resets <button> to cursor:default (unlike native
+ * browser behavior) — restore the hand cursor on every clickable control.
+ * Placed in @layer base so a utility class like cursor-grab/cursor-nwse-resize/
+ * cursor-not-allowed (higher-precedence utilities layer) still wins where a
+ * component deliberately sets a different cursor (e.g. SignaturePlacement's
+ * drag/resize handles). */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  a,
+  label[for] {
+    cursor: pointer;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.menu-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.menu-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

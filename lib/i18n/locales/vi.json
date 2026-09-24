@@ -1,0 +1,293 @@
+{
+  "app": {
+    "title": "KysoQR",
+    "promo": "Ký số an toàn cho tài liệu của bạn"
+  },
+  "home": {
+    "eyebrow": "KysoQR",
+    "title": "Hợp đồng ký xong trong một lần kéo thả.",
+    "subtitle": "KysoQR là dịch vụ ký số tài liệu qua mã QR: tải PDF lên, xác nhận yêu cầu ký ngay trên app Cas ID, nhận lại tệp PDF đã ký hợp lệ mà ai cũng có thể xác minh bằng mã phiên ký hoặc bằng cách tải tệp lên kiểm tra.",
+    "instruction2": "Hỗ trợ {{formats}} (Tối đa {{maxSize}}MB)",
+    "steps": {
+      "upload": {
+        "title": "Tải tệp PDF lên",
+        "description": "Tối đa 20 MB. Tệp nằm trong bộ nhớ tạm, xoá sau 24 giờ."
+      },
+      "place": {
+        "title": "Đặt vị trí chữ ký, rồi xác nhận trên app Cas ID",
+        "description": "Quét mã QR hoặc nhận thông báo đẩy trên app Cas ID để duyệt yêu cầu ký — chữ ký số PAdES kèm dấu thời gian từ CA được cấp phép."
+      },
+      "download": {
+        "title": "Nhận lại tệp PDF đã ký hợp lệ",
+        "description": "Ai cũng có thể xác minh bất cứ lúc nào bằng mã phiên ký in trên tệp, hoặc tải tệp PDF lên để kiểm tra."
+      }
+    },
+    "tags": {
+      "invoices": "Hoá đơn & hợp đồng",
+      "reconciliation": "Biên bản đối soát",
+      "hr": "Hồ sơ nhân sự"
+    },
+    "signCard": {
+      "title": "Ký hoặc xác minh chữ ký ngay, không cần đăng nhập",
+      "badge": "1 tệp / lượt",
+      "dropzoneTitle": "Kéo thả PDF vào đây",
+      "dropzoneSubtitle": "hoặc chọn tệp từ máy của bạn để bắt đầu ký"
+    },
+    "githubLink": "Xem mã nguồn trên GitHub",
+    "intent": {
+      "sign": "Ký tài liệu",
+      "verify": "Xác minh chữ ký",
+      "ariaLabel": "Chọn việc muốn làm"
+    },
+    "recentSignatures": {
+      "title": "5 phiên ký gần nhất",
+      "downloadButton": "Tải xuống",
+      "downloadError": "Không tải được file này (có thể đã hết lượt tải). Vui lòng dùng bản đã tải trước đó."
+    }
+  },
+  "nav": {
+    "upload": "Tài liệu",
+    "api": "API"
+  },
+  "footer": {
+    "title1": "Bảo mật chuẩn quốc tế",
+    "title2": "Ký nhanh trong giây lát",
+    "title3": "Pháp lý vững chắc",
+    "footer": "© 2026 KysoQR. All rights reserved."
+  },
+  "steps": {
+    "uploadRequest": "Tải PDF & yêu cầu quyền",
+    "scan": "Quét QR",
+    "done": "Tài liệu đã ký",
+    "progressLabel": "Bước {{current}}/{{total}}",
+    "ariaProgress": "Tiến trình ký tài liệu",
+    "helperUploadRequest": "Bắt đầu bằng cách tải PDF lên và chuẩn bị yêu cầu ký.",
+    "helperScan": "Người ký quét mã QR bằng ứng dụng Cas ID và chấp thuận quyền ký.",
+    "helperDone": "Mở hoặc tải về PDF đã ký để lưu trữ và chia sẻ."
+  },
+  "common": {
+    "upload": "Tải lên",
+    "uploading": "Đang tải…",
+    "reset": "Đặt lại",
+    "submitting": "Đang gửi…",
+    "fetching": "Đang lấy…",
+    "downloadSignedPdf": "Tải PDF đã ký",
+    "page": "Trang",
+    "startOver": "Bắt đầu phiên ký khác",
+    "close": "Đóng"
+  },
+  "upload": {
+    "title": "Tải PDF",
+    "uploadPreview": "Xem trước & đặt vị trí chữ ký",
+    "dropHint": "Chọn tệp PDF hoặc kéo thả vào đây",
+    "errorNotPdf": "Chỉ hỗ trợ tệp PDF. Vui lòng chọn một tài liệu PDF.",
+    "errorTooLarge": "Tệp quá lớn. Vui lòng chọn PDF có dung lượng tối đa {{maxMb}} MB.",
+    "requirements": "Chỉ PDF • tối đa {{maxMb}} MB",
+    "selectedLabel": "Sẵn sàng tải lên",
+    "noFile": "Chưa có tệp nào được chọn. Hãy chọn một PDF để bắt đầu.",
+    "changeFile": "Đổi tệp khác"
+  },
+  "signerConfig": {
+    "signerKindLabel": "Người ký là ai?",
+    "signerKind": { "individual": "Cá nhân", "enterprise": "Doanh nghiệp" },
+    "cccdLabel": "CCCD người ký",
+    "representativeCccdLabel": "CCCD người đại diện",
+    "cccdHint": "Bắt buộc để đẩy yêu cầu ký sang app Cas ID. 12 số (hoặc 9 số nếu là CMND cũ). Có thể để trống để chỉ ký bằng QR.",
+    "fullNameLabel": "Họ tên người ký",
+    "fullNamePlaceholder": "NGUYỄN VĂN A",
+    "taxCodeLabel": "Mã số thuế (MST)",
+    "taxCodeHint": "10 số, có thể kèm 3 số chi nhánh.",
+    "organizationLabel": "Tên công ty",
+    "organizationPlaceholder": "Tên công ty theo đăng ký",
+    "representativeLabel": "Người đại diện",
+    "representativePlaceholder": "Họ tên người đại diện pháp luật",
+    "noCccdWarning": "Chưa có CCCD thì chỉ ký được bằng QR — sẽ không có thông báo đẩy sang app Cas ID.",
+    "errors": {
+      "cccd": "CCCD phải là 12 số (hoặc 9 số nếu là CMND cũ).",
+      "taxCode": "Mã số thuế phải là 10 số, có thể kèm -3 số.",
+      "organizationName": "Tên công ty là bắt buộc với doanh nghiệp.",
+      "representativeName": "Tên người đại diện là bắt buộc với doanh nghiệp."
+    }
+  },
+  "permission": {
+    "description": "Hệ thống sẽ tạo mã QR để người ký phê duyệt yêu cầu ký này trong app Cas ID."
+  },
+  "scan": {
+    "title": "Quét QR (Cấp quyền ký tài liệu)",
+    "subtitle": "Cho phép được ký tài liệu này bằng ứng dụng Cas ID của bạn.",
+    "instruction": "Yêu cầu người ký quét mã QR này bằng ứng dụng Cas ID và phê duyệt quyền ký.",
+    "pushHint": "Đã gửi yêu cầu ký sang app Cas ID của người ký — có thể ký từ thông báo hoặc quét mã.",
+    "caption": "Quét bằng ứng dụng Cas ID",
+    "syncStatus": "Cập nhật trạng thái",
+    "back": "Quay lại chỉnh sửa",
+    "qrPayload": "Nội dung QR:",
+    "status": "Trạng thái ký",
+    "waiting": "Đang chờ người ký quét mã…",
+    "accepted": "Đã chấp nhận — đang hoàn tất ký…",
+    "rejected": "Đã từ chối ký.",
+    "failed": "Ký không thành công do lỗi kỹ thuật. Vui lòng thử lại.",
+    "expired": "Phiên ký đã hết hạn. Hãy bắt đầu lại.",
+    "statusError": "Không thể cập nhật trạng thái ký.",
+    "expiresIn": "Hết hạn sau {{time}}",
+    "qrRenderFailed": "Không thể hiển thị mã QR.",
+    "qrRenderFailedSeePayload": "Xem nội dung bên dưới.",
+    "aria": { "qrCode": "Mã QR" }
+  },
+  "sign": {
+    "needUploadForPreview": "Hãy tải PDF để xem trước và đặt vị trí chữ ký.",
+    "submit": "Ký",
+    "renderingPreview": "Đang kết xuất xem trước…",
+    "clickOrDrag": "Cuộn để xem các trang · bấm 'Thêm ô chữ ký' rồi nhấp vào vị trí muốn đặt",
+    "addField": "Chọn vị trí ký",
+    "addFirstFieldHint": "Chưa có ô ký — thêm khi bạn sẵn sàng đặt chữ ký.",
+    "removeField": "Xoá ô này",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ",
+    "fieldCount": "{{onPage}} ô ở trang này · {{total}} ô tổng cộng",
+    "aria": {
+      "signaturePlacement": "Vị trí chữ ký",
+      "resizeField": "Thay đổi kích thước ô chữ ký",
+      "pdfPreview": "Xem trước trang PDF"
+    }
+  },
+  "done": {
+    "title": "Tài liệu đã ký",
+    "signedSuccess": "Ký thành công!",
+    "signedPdfTitle": "Xem trước PDF đã ký",
+    "loadingInlinePreview": "Đang tải bản xem trước PDF đã ký…",
+    "verificationCodeLabel": "Mã xác minh",
+    "copyCodeTitle": "Sao chép mã xác minh",
+    "copied": "Đã sao chép!",
+    "verifyButton": "Xem xác minh",
+    "continueSigning": "Tiếp tục ký"
+  },
+  "downloadReminder": {
+    "ariaLabel": "Tải tài liệu đã ký về máy",
+    "title": "Tài liệu của bạn đã ký xong",
+    "body": "Tải về ngay để giữ một bản trên máy — file vẫn ở đây, nhưng trang này rất dễ bị lạc mất sau này.",
+    "downloadButton": "Tải file PDF đã ký",
+    "dismissButton": "Để lúc khác"
+  },
+  "signingRound": {
+    "notFound": "Không tìm thấy mã xác minh.",
+    "signedAt": "Ký lúc",
+    "verdict": {
+      "validTitle": "Chữ ký hợp lệ",
+      "validNote": "Phiên ký đã hoàn tất, chứng thư số hợp lệ và tài liệu không bị thay đổi kể từ thời điểm ký.",
+      "invalidTitle": "Tài liệu đã bị thay đổi sau khi ký",
+      "invalidNote": "Chữ ký hợp lệ tại thời điểm ký, nhưng nội dung tài liệu hiện tại không còn khớp với bản đã ký. Không nên sử dụng bản này làm bằng chứng."
+    },
+    "tiles": {
+      "integrity": "Tính toàn vẹn tài liệu",
+      "integrityHintOk": "Nội dung PDF khớp với bản đã ký",
+      "integrityHintBad": "Nội dung PDF khác với bản đã ký",
+      "validity": "Hiệu lực chữ ký tại thời điểm ký",
+      "validityHint": "Chứng thư số còn hiệu lực và không bị thu hồi",
+      "timestamp": "Timestamp",
+      "timestampHint": "Có gắn dấu thời gian đáng tin cậy hay không"
+    },
+    "signer": {
+      "title": "Người ký",
+      "displayName": "Họ và tên",
+      "authMethod": "Phương thức xác thực"
+    },
+    "device": {
+      "title": "Thiết bị & xác thực",
+      "empty": "Không có thông tin thiết bị cho phiên ký này."
+    },
+    "certificate": {
+      "title": "Chứng thư số",
+      "signerSubject": "Chủ thể chứng thư",
+      "issuer": "Tổ chức phát hành",
+      "commonName": "Tên định danh (CN)",
+      "organization": "Tổ chức (O)",
+      "country": "Quốc gia (C)",
+      "taxOrCitizenId": "MST / CCCD"
+    }
+  },
+  "verify": {
+    "title": "Tra cứu phiên ký",
+    "subtitle": "Nhập mã in trên file PDF đã ký, hoặc tải file PDF lên, để kiểm tra chữ ký và tính toàn vẹn tài liệu.",
+    "status": "Trạng thái",
+    "subject": "Chủ thể",
+    "issuer": "Tổ chức phát hành",
+    "signedBy": "Người ký",
+    "signedAt": "Thời điểm ký",
+    "certificate": "Chứng thư số",
+    "signature": "Chữ ký",
+    "signatureNumber": "Chữ ký số #{{number}}",
+    "serial": "Số sê-ri",
+    "valid": "Hiệu lực",
+    "validFrom": "Hiệu lực từ",
+    "validTo": "Hiệu lực đến",
+    "certificateChain": "Chuỗi chứng thư",
+    "chainValid": "Chuỗi hợp lệ",
+    "chainInvalid": "Chuỗi không hợp lệ",
+    "leafCert": "Chứng thư người ký",
+    "caCert": "Chứng thư CA",
+    "rootCaCert": "Chứng thư gốc tin cậy",
+    "contentIntact": {
+      "ok": "Nội dung khớp với những gì đã được ký.",
+      "modified": "Nội dung có vẻ đã bị thay đổi sau khi ký.",
+      "unknown": "Không thể đánh giá tính toàn vẹn của nội dung."
+    },
+    "form": {
+      "codeLabel": "Mã phiên ký (orgIdSigned)",
+      "codePlaceholder": "VD: kysoqr.com#8F2K-4T7Q",
+      "codeFormatHint": "Nhập nguyên mã orgIdSigned đúng như trên PDF đã ký, bao gồm cả phần prefix.",
+      "verify": "Xác minh"
+    },
+    "copyLink": "Sao chép liên kết",
+    "copyLinkTitle": "Sao chép liên kết xác minh",
+    "copied": "Đã sao chép!",
+    "loadingResult": "Đang tải kết quả…",
+    "shortLabels": {
+      "SIGNED_VALID": "Hợp lệ",
+      "CONTENT_DIGEST_MISMATCH": "Nội dung đã bị thay đổi",
+      "CHAIN_VALIDATION_FAILED": "Chuỗi chứng thư không hợp lệ",
+      "ROOT_NOT_TRUSTED": "Root CA chưa được tin cậy",
+      "SIGNATURE_INVALID": "Chữ ký không hợp lệ",
+      "TRUST_STORE_NOT_CONFIGURED": "Chưa cấu hình kho tin cậy",
+      "UNSUPPORTED_SUBFILTER": "Định dạng chữ ký chưa hỗ trợ"
+    }
+  },
+  "verifyUpload": {
+    "tabCode": "Xác minh bằng mã",
+    "tabUpload": "Xác minh PDF tải lên",
+    "tabAriaLabel": "Phương thức xác minh",
+    "form": {
+      "fileLabel": "Tải lên PDF đã ký",
+      "button": "Xác minh PDF",
+      "helperText": "Chúng tôi chỉ dùng tệp này tạm thời để kiểm tra chữ ký, không lưu lại trong trình duyệt sau khi bạn rời khỏi trang."
+    },
+    "error": {
+      "title": "Xác minh không thành công",
+      "retry": "Thử lại",
+      "notPdf": "Tệp này có vẻ không phải PDF. Vui lòng chọn một tệp PDF hợp lệ.",
+      "tooLarge": "Tệp quá lớn. Vui lòng chọn tệp PDF có kích thước tối đa {{maxMb}} MB."
+    },
+    "genericError": "Hiện không thể xác minh PDF này. Vui lòng thử lại sau một lúc.",
+    "noSignatureFound": "Không tìm thấy chữ ký số nào trong tệp này.",
+    "verifyAnother": "Xác minh tệp khác"
+  },
+  "signatureHistory": {
+    "title": "Lịch sử ký",
+    "subtitle_other": "Tài liệu này đã có {{count}} chữ ký số trước đó.",
+    "closeAriaLabel": "Đóng lịch sử ký",
+    "chain": {
+      "title": "Chuỗi chứng thư số",
+      "ca": "Tổ chức phát hành (CA)",
+      "leaf": "Chứng thư số người ký",
+      "serial": "Số seri",
+      "validity": "Hiệu lực",
+      "documentIntegrity": "Tài liệu đã ký",
+      "rootNotTrusted": "Root CA không nằm trong danh sách tin cậy.",
+      "revocationUnsupported": "Chưa hỗ trợ kiểm tra",
+      "revocation": {
+        "notRevoked": "Chứng thư số chưa bị thu hồi",
+        "revoked": "Chứng thư số ĐÃ BỊ THU HỒI",
+        "unavailableWithUrl": "Không kiểm tra được"
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=Xsign-Opensource (KysoQR)
+After=network.target
+
+[Service]
+Type=simple
+User=xsign
+WorkingDirectory=/opt/xsign-opensource
+ExecStart=/usr/bin/npm run start
+Environment=PORT=3000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,294 @@
+{
+  "app": {
+    "title": "KysoQR",
+    "promo": "Secure digital signing for your documents"
+  },
+  "home": {
+    "eyebrow": "KysoQR",
+    "title": "Sign a contract in one drag-and-drop.",
+    "subtitle": "KysoQR is a QR-based digital document signing service: upload a PDF, approve the signing request in the Cas ID app, and get back a validly signed PDF anyone can verify by its signing code or by uploading the file.",
+    "instruction2": "Supports {{formats}} (Max {{maxSize}}MB)",
+    "steps": {
+      "upload": {
+        "title": "Upload your PDF",
+        "description": "Up to 20 MB. Files are held temporarily and deleted after 24 hours."
+      },
+      "place": {
+        "title": "Place your signature, then confirm in the Cas ID app",
+        "description": "Scan the QR code or receive a push notification in the Cas ID app to approve the signing request — a PAdES digital signature with a timestamp from a licensed CA."
+      },
+      "download": {
+        "title": "Get back a validly signed PDF",
+        "description": "Anyone can verify it anytime using the signing code printed on the file, or by uploading the PDF itself."
+      }
+    },
+    "tags": {
+      "invoices": "Invoices & contracts",
+      "reconciliation": "Reconciliation reports",
+      "hr": "HR records"
+    },
+    "signCard": {
+      "title": "Sign or verify a signature now, no login needed",
+      "badge": "1 file / session",
+      "dropzoneTitle": "Drop your PDF here",
+      "dropzoneSubtitle": "or choose a file from your device to start signing"
+    },
+    "githubLink": "View source on GitHub",
+    "intent": {
+      "sign": "Sign a document",
+      "verify": "Verify a signature",
+      "ariaLabel": "Choose what to do"
+    },
+    "recentSignatures": {
+      "title": "5 most recent signatures",
+      "downloadButton": "Download",
+      "downloadError": "Couldn't download this file (the download allowance may be used up). Please use a copy you already downloaded."
+    }
+  },
+  "nav": {
+    "upload": "Upload document",
+    "api": "API"
+  },
+  "footer": {
+    "title1": "Internationally standard security",
+    "title2": "Fast signing in seconds",
+    "title3": "Solid legal foundation",
+    "footer": "© 2026 KysoQR. All rights reserved."
+  },
+  "steps": {
+    "uploadRequest": "Upload PDF & request permission",
+    "scan": "Scan QR",
+    "done": "Signed document",
+    "progressLabel": "Step {{current}} of {{total}}",
+    "ariaProgress": "Signing progress",
+    "helperUploadRequest": "Start by uploading your PDF and preparing the signing request.",
+    "helperScan": "Ask the signer to scan the QR code with their Cas ID app and approve the signing request.",
+    "helperDone": "Open or download the signed PDF and keep it with your records."
+  },
+  "common": {
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "reset": "Reset",
+    "submitting": "Submitting…",
+    "fetching": "Fetching…",
+    "downloadSignedPdf": "Download Signed PDF",
+    "page": "Page",
+    "startOver": "Start another signing",
+    "close": "Close"
+  },
+  "upload": {
+    "title": "Upload PDF",
+    "uploadPreview": "Preview & placement",
+    "dropHint": "Choose a PDF file or drag & drop it here",
+    "errorNotPdf": "Only PDF files are supported. Please choose a PDF document.",
+    "errorTooLarge": "File is too large. Please select a PDF up to {{maxMb}} MB.",
+    "requirements": "PDF only • up to {{maxMb}} MB",
+    "selectedLabel": "Ready to upload",
+    "noFile": "No file selected yet. Choose a PDF to get started.",
+    "changeFile": "Change file"
+  },
+  "signerConfig": {
+    "signerKindLabel": "Who is signing?",
+    "signerKind": { "individual": "Individual", "enterprise": "Business" },
+    "cccdLabel": "Citizen ID (CCCD)",
+    "representativeCccdLabel": "Legal representative's citizen ID (CCCD)",
+    "cccdHint": "Required to send a signing request to the Cas ID app. 12 digits (or 9 for an old CMND). Leave blank for QR-only signing.",
+    "fullNameLabel": "Signer's full name",
+    "fullNamePlaceholder": "NGUYEN VAN A",
+    "taxCodeLabel": "Tax code (MST)",
+    "taxCodeHint": "10 digits, optionally followed by a 3-digit branch code.",
+    "organizationLabel": "Company name",
+    "organizationPlaceholder": "Company name as registered",
+    "representativeLabel": "Legal representative",
+    "representativePlaceholder": "Full name of the legal representative",
+    "noCccdWarning": "Without a citizen ID we can only offer QR signing — no notification will be pushed to the Cas ID app.",
+    "errors": {
+      "cccd": "Citizen ID must be 12 digits (or 9 for an old CMND).",
+      "taxCode": "Tax code must be 10 digits, optionally followed by -3 digits.",
+      "organizationName": "Company name is required for enterprise signers.",
+      "representativeName": "Representative name is required for enterprise signers."
+    }
+  },
+  "permission": {
+    "description": "We will generate a QR code for the signer to approve this signing request in the Cas ID app."
+  },
+  "scan": {
+    "title": "Scan QR (Permission)",
+    "subtitle": "Authorize signing this document via your Cas ID app.",
+    "instruction": "Ask the signer to scan this QR code with the Cas ID app and approve the signing request.",
+    "pushHint": "A signing request was pushed to the signer's Cas ID app — they can approve it from the notification or by scanning the code.",
+    "caption": "Scan with Cas ID app",
+    "syncStatus": "Refresh status",
+    "back": "Back to edit",
+    "qrPayload": "QR payload:",
+    "status": "Signing status",
+    "waiting": "Waiting for the signer to scan…",
+    "accepted": "Accepted – finishing signing in the background…",
+    "rejected": "Signing was rejected.",
+    "failed": "Signing failed due to a technical error. Please try again.",
+    "expired": "This signing session expired. Please start over.",
+    "statusError": "We could not refresh the signing status.",
+    "expiresIn": "Expires in {{time}}",
+    "qrRenderFailed": "Failed to render QR.",
+    "qrRenderFailedSeePayload": "See payload below.",
+    "aria": { "qrCode": "QR code" }
+  },
+  "sign": {
+    "needUploadForPreview": "Upload a PDF to preview and place the signature.",
+    "submit": "Sign document",
+    "renderingPreview": "Rendering preview…",
+    "clickOrDrag": "Scroll to browse pages · click \"Add signature box\" then click where to place it",
+    "addField": "Choose signature position",
+    "addFirstFieldHint": "No box yet — add one when you are ready to place the signature.",
+    "removeField": "Remove this box",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "fieldCount": "{{onPage}} on this page · {{total}} in total",
+    "aria": {
+      "signaturePlacement": "Signature placement",
+      "resizeField": "Resize signature box",
+      "pdfPreview": "PDF page preview"
+    }
+  },
+  "done": {
+    "title": "Signed Document",
+    "signedSuccess": "Signed successfully!",
+    "signedPdfTitle": "Signed PDF preview",
+    "loadingInlinePreview": "Loading signed PDF preview…",
+    "verificationCodeLabel": "Verification code",
+    "copyCodeTitle": "Copy verification code",
+    "copied": "Copied!",
+    "verifyButton": "View verification",
+    "continueSigning": "Continue signing"
+  },
+  "downloadReminder": {
+    "ariaLabel": "Download your signed document",
+    "title": "Your document is signed",
+    "body": "Download it now to keep a copy on your device — the file stays here, but it's easy to lose track of this page later.",
+    "downloadButton": "Download signed PDF",
+    "dismissButton": "I'll download it later"
+  },
+  "signingRound": {
+    "notFound": "Verification code not found.",
+    "signedAt": "Signed at",
+    "verdict": {
+      "validTitle": "Signature is valid",
+      "validNote": "The signing round completed, the certificate is valid, and the document hasn't changed since it was signed.",
+      "invalidTitle": "The document was changed after signing",
+      "invalidNote": "The signature was valid when signed, but the document's current content no longer matches the signed version. Don't rely on this copy as evidence."
+    },
+    "tiles": {
+      "integrity": "Document integrity",
+      "integrityHintOk": "The PDF content matches what was signed",
+      "integrityHintBad": "The PDF content differs from what was signed",
+      "validity": "Signature validity at signing time",
+      "validityHint": "Whether the certificate was valid and not revoked",
+      "timestamp": "Timestamp",
+      "timestampHint": "Whether a trusted timestamp is attached"
+    },
+    "signer": {
+      "title": "Signer",
+      "displayName": "Full name",
+      "authMethod": "Authentication method"
+    },
+    "device": {
+      "title": "Device & authentication",
+      "empty": "No device details were returned for this signing round."
+    },
+    "certificate": {
+      "title": "Digital certificate",
+      "signerSubject": "Certificate subject",
+      "issuer": "Issuing authority",
+      "commonName": "Common name (CN)",
+      "organization": "Organization (O)",
+      "country": "Country (C)",
+      "taxOrCitizenId": "Tax code / Citizen ID"
+    }
+  },
+  "verify": {
+    "title": "Look up a signing round",
+    "subtitle": "Enter the code printed on your signed PDF, or upload the signed PDF itself, to check its signature and integrity.",
+    "status": "Status",
+    "subject": "Subject",
+    "issuer": "Issuer",
+    "signedBy": "Signed by",
+    "signedAt": "Signed at",
+    "certificate": "Certificate",
+    "signature": "Signature",
+    "signatureNumber": "Digital signature #{{number}}",
+    "serial": "Serial",
+    "valid": "Valid",
+    "validFrom": "Valid From",
+    "validTo": "Valid To",
+    "certificateChain": "Certificate chain",
+    "chainValid": "Chain valid",
+    "chainInvalid": "Chain invalid",
+    "leafCert": "Leaf certificate",
+    "caCert": "CA certificate",
+    "rootCaCert": "Trusted root CA",
+    "contentIntact": {
+      "ok": "Content matches what was signed.",
+      "modified": "Content appears modified after signing.",
+      "unknown": "Content integrity could not be evaluated."
+    },
+    "form": {
+      "codeLabel": "Signing round code (orgIdSigned)",
+      "codePlaceholder": "e.g. kysoqr.com#8F2K-4T7Q",
+      "codeFormatHint": "Enter the complete orgIdSigned exactly as printed on the signed PDF, including its prefix.",
+      "verify": "Verify"
+    },
+    "copyLink": "Copy link",
+    "copyLinkTitle": "Copy verification link",
+    "copied": "Copied!",
+    "loadingResult": "Loading result…",
+    "shortLabels": {
+      "SIGNED_VALID": "Valid",
+      "CONTENT_DIGEST_MISMATCH": "Content was modified",
+      "CHAIN_VALIDATION_FAILED": "Certificate chain invalid",
+      "ROOT_NOT_TRUSTED": "Root CA not trusted",
+      "SIGNATURE_INVALID": "Signature invalid",
+      "TRUST_STORE_NOT_CONFIGURED": "Trust store not configured",
+      "UNSUPPORTED_SUBFILTER": "Unsupported signature format"
+    }
+  },
+  "verifyUpload": {
+    "tabCode": "Verify by code",
+    "tabUpload": "Verify uploaded PDF",
+    "tabAriaLabel": "Verification method",
+    "form": {
+      "fileLabel": "Upload a signed PDF",
+      "button": "Verify PDF",
+      "helperText": "We only use this file temporarily to verify its signature. It is not stored in your browser after this page."
+    },
+    "error": {
+      "title": "Verification failed",
+      "retry": "Try again",
+      "notPdf": "This file does not look like a PDF. Please choose a valid PDF file.",
+      "tooLarge": "This file is too large. Please choose a PDF up to {{maxMb}} MB."
+    },
+    "genericError": "We could not verify this PDF right now. Please try again in a moment.",
+    "noSignatureFound": "No digital signature was found in this file.",
+    "verifyAnother": "Verify another file"
+  },
+  "signatureHistory": {
+    "title": "Signature history",
+    "subtitle_one": "This document already has {{count}} existing digital signature.",
+    "subtitle_other": "This document already has {{count}} existing digital signatures.",
+    "closeAriaLabel": "Close signature history",
+    "chain": {
+      "title": "Certificate chain",
+      "ca": "Issuing CA",
+      "leaf": "Signer certificate",
+      "serial": "Serial number",
+      "validity": "Valid",
+      "documentIntegrity": "Document",
+      "rootNotTrusted": "Root CA is not in the trusted store.",
+      "revocationUnsupported": "Not supported yet",
+      "revocation": {
+        "notRevoked": "Certificate has not been revoked",
+        "revoked": "Certificate HAS BEEN REVOKED",
+        "unavailableWithUrl": "Could not be checked"
+      }
+    }
+  }
+}

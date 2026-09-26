@@ -2,7 +2,6 @@ import type { TrustStore } from '../trustStore/TrustStore';
 import { parseCertificateInfo } from './certParser';
 import { parseCmsMessage } from './cmsAsn1';
 import { type ChainCertInfo, verifyCertificateChainFromCmsBuffer } from './certChainVerifier';
-import { verifyDebug } from './debugLog';
 import { verifyPdfContentDigest } from './pdfContentDigestVerifier';
 import {
   type ExtractCmsSuccess,
@@ -78,7 +77,6 @@ async function verifyOneSignature(
   }
 
   if (!sigCheck.ok) {
-    verifyDebug('orchestrator:result', { status: 'SIGNATURE_INVALID', reason: sigCheck.reason });
     return {
       status: 'SIGNATURE_INVALID',
       message:
@@ -95,14 +93,7 @@ async function verifyOneSignature(
   // digest mismatch, since a viewer could render them as if they were part
   // of the signed content.
   const digestCheck = verifyPdfContentDigest(pdfBytes, cmsDer, byteRange);
-  verifyDebug('orchestrator:content-check', { digestCheckOk: digestCheck.ok, wholeFileCovered });
   if (!digestCheck.ok || !wholeFileCovered) {
-    verifyDebug('orchestrator:result', {
-      status: 'CONTENT_DIGEST_MISMATCH',
-      cause: !digestCheck.ok
-        ? digestCheck.reason
-        : 'shadow-attack: last signature does not cover whole file',
-    });
     return {
       status: 'CONTENT_DIGEST_MISMATCH',
       message: 'The PDF content does not match what was actually signed.',
@@ -113,7 +104,6 @@ async function verifyOneSignature(
   }
 
   if (!trustStore.isConfigured()) {
-    verifyDebug('orchestrator:result', { status: 'TRUST_STORE_NOT_CONFIGURED' });
     return {
       status: 'TRUST_STORE_NOT_CONFIGURED',
       message:
@@ -134,10 +124,6 @@ async function verifyOneSignature(
   );
 
   if (!chainResult) {
-    verifyDebug('orchestrator:result', {
-      status: 'CHAIN_VALIDATION_FAILED',
-      cause: 'no certificates in CMS',
-    });
     return {
       status: 'CHAIN_VALIDATION_FAILED',
       message: 'The PDF signature contains no valid certificate chain.',
@@ -152,7 +138,6 @@ async function verifyOneSignature(
       // The vulnerability this replaces: the legacy verifier treated this
       // exact case as still SIGNED_VALID. An untrusted root is now always
       // its own distinct, non-valid status.
-      verifyDebug('orchestrator:result', { status: 'ROOT_NOT_TRUSTED' });
       return {
         status: 'ROOT_NOT_TRUSTED',
         message:
@@ -166,10 +151,6 @@ async function verifyOneSignature(
       };
     }
 
-    verifyDebug('orchestrator:result', {
-      status: 'CHAIN_VALIDATION_FAILED',
-      cause: chainResult.error,
-    });
     return {
       status: 'CHAIN_VALIDATION_FAILED',
       message: chainResult.error ?? 'The signature certificate chain is invalid.',
@@ -180,10 +161,6 @@ async function verifyOneSignature(
     };
   }
 
-  verifyDebug('orchestrator:result', {
-    status: 'SIGNED_VALID',
-    certificateExpiredNow: chainResult.certificateExpiredNow,
-  });
   return {
     status: 'SIGNED_VALID',
     message: chainResult.certificateExpiredNow
@@ -225,11 +202,8 @@ export async function verifyPdfSignatures(
   pdfBytes: Buffer,
   trustStore: TrustStore
 ): Promise<VerificationResult[]> {
-  verifyDebug('orchestrator:start', { pdfBytes: pdfBytes.length });
-
   const extraction = extractAllCmsFromSignedPdf(pdfBytes);
   if (!extraction.ok) {
-    verifyDebug('orchestrator:extraction-failed', { error: extraction.error });
     if (extraction.error.kind === 'NO_SIGNATURE_FIELD_FOUND') return [];
     if (extraction.error.kind === 'UNSUPPORTED_SUBFILTER') {
       return [
@@ -247,23 +221,10 @@ export async function verifyPdfSignatures(
     ];
   }
 
-  if (extraction.values.length > MAX_SIGNATURES_PER_DOCUMENT) {
-    verifyDebug('orchestrator:too-many-signatures', {
-      found: extraction.values.length,
-      cap: MAX_SIGNATURES_PER_DOCUMENT,
-    });
-  }
   const values = extraction.values.slice(0, MAX_SIGNATURES_PER_DOCUMENT);
 
   const wholeFileCovered = isLastSignatureCoveringWholeFile(values, pdfBytes.length);
   const lastIndex = values.length - 1;
-  const last = values[lastIndex];
-  verifyDebug('orchestrator:shadow-attack-check', {
-    totalFileLength: pdfBytes.length,
-    lastSignatureByteRange: last?.byteRange,
-    lastSignatureCoveredUpTo: last ? last.byteRange[2] + last.byteRange[3] : null,
-    wholeFileCovered,
-  });
 
   return Promise.all(
     values.map((value, index) =>

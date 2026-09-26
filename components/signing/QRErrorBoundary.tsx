@@ -17,7 +17,7 @@ export class QRErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('[QRCode][RenderError]', { error, info });
+    console.warn('[QRCode][RenderError]', { error, info });
   }
 
   render() {

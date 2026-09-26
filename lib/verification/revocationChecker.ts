@@ -1,7 +1,6 @@
 import forge from 'node-forge';
 import * as asn1js from 'asn1js';
 import * as pkijs from 'pkijs';
-import { verifyDebug } from './debugLog';
 import { fetchBytesWithGuards, isAddressAllowed } from './guardedFetch';
 
 /**
@@ -129,10 +128,7 @@ export async function checkOcsp(
     pkijsCert = toPkijsCertificate(cert);
     pkijsIssuer = toPkijsCertificate(issuer);
     url = findAiaUrl(pkijsCert, pkijs.id_ad_ocsp);
-  } catch (error) {
-    verifyDebug('revocation:ocsp-parse-error', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return UNAVAILABLE_NO_URL;
   }
   if (!url) return UNAVAILABLE_NO_URL;
@@ -167,25 +163,15 @@ export async function checkOcsp(
       .verify({ trustedCerts: [pkijsIssuer] })
       .catch(() => false);
     if (!signatureOk) {
-      verifyDebug('revocation:ocsp-signature-invalid', { url });
       return { status: 'unavailable', url };
     }
 
     const result = await basicResponse.getCertificateStatus(pkijsCert, pkijsIssuer);
-    verifyDebug('revocation:ocsp-result', {
-      url,
-      isForCertificate: result.isForCertificate,
-      status: result.status,
-    });
     if (!result.isForCertificate) return { status: 'unavailable', url };
     if (result.status === 0) return { status: 'not_revoked', url };
     if (result.status === 1) return { status: 'revoked', url };
     return { status: 'unavailable', url };
-  } catch (error) {
-    verifyDebug('revocation:ocsp-network-error', {
-      url,
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return { status: 'unavailable', url };
   }
 }
@@ -206,10 +192,7 @@ export async function checkCrl(
     pkijsCert = toPkijsCertificate(cert);
     pkijsIssuer = toPkijsCertificate(issuer);
     url = findCrlUrl(pkijsCert);
-  } catch (error) {
-    verifyDebug('revocation:crl-parse-error', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return UNAVAILABLE_NO_URL;
   }
   if (!url) return UNAVAILABLE_NO_URL;
@@ -225,25 +208,18 @@ export async function checkCrl(
     const body = derFromPossiblyPem(responseBytes);
     const parsed = asn1js.fromBER(body);
     if (parsed.offset === -1) {
-      verifyDebug('revocation:crl-decode-error', { url });
       return { status: 'unavailable', url };
     }
     const crl = new pkijs.CertificateRevocationList({ schema: parsed.result });
 
     const signatureOk = await crl.verify({ issuerCertificate: pkijsIssuer }).catch(() => false);
     if (!signatureOk) {
-      verifyDebug('revocation:crl-signature-invalid', { url });
       return { status: 'unavailable', url };
     }
 
     const revoked = crl.isCertificateRevoked(pkijsCert);
-    verifyDebug('revocation:crl-result', { url, revoked });
     return { status: revoked ? 'revoked' : 'not_revoked', url };
-  } catch (error) {
-    verifyDebug('revocation:crl-network-error', {
-      url,
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return { status: 'unavailable', url };
   }
 }

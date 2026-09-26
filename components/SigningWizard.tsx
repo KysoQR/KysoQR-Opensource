@@ -24,6 +24,7 @@ import {
   type CasSignerConfigValue,
 } from '@/components/SignerConfigPanel';
 import { DownloadReminderModal } from '@/components/DownloadReminderModal';
+import { SignRequestErrorModal } from '@/components/SignRequestErrorModal';
 import { VerificationPopup } from '@/components/VerificationPopup';
 import { SigningRoundResult } from '@/components/SigningRoundResult';
 import { SignatureHistorySidebar } from '@/components/SignatureHistorySidebar';
@@ -538,7 +539,7 @@ export function SigningWizard({
         // reached the server's own terminal log before -- logging the full
         // body here means opening DevTools on a real deploy shows the same
         // thing, not just the generic message shown on screen below.
-        console.error('[sign:request] failed', data);
+        console.warn('[sign:request] failed', data);
         throw new Error(data.message ?? 'Gửi yêu cầu ký thất bại');
       }
 
@@ -572,7 +573,7 @@ export function SigningWizard({
     try {
       return await fetchSignedPdfBytes(identityKey);
     } catch (err) {
-      // Already console.error'd with the full response body inside
+      // Already console.warn'd with the full response body inside
       // `downloadSignedPdfBlob` (lib/downloadSignedPdf.ts) -- this just
       // surfaces the (already-friendly) message to the UI.
       setSignedPdfError(err instanceof Error ? err.message : String(err));
@@ -614,7 +615,7 @@ export function SigningWizard({
             timeoutId = setTimeout(poll, 8000);
             return;
           }
-          console.error('[sign:status] poll failed', data);
+          console.warn('[sign:status] poll failed', data);
           setStatusError(data.message ?? 'status error');
           timeoutId = setTimeout(poll, 6000);
           return;
@@ -663,7 +664,7 @@ export function SigningWizard({
         timeoutId = setTimeout(poll, 4000);
       } catch (err) {
         if (!cancelled) {
-          console.error('[sign:status] poll request failed', err);
+          console.warn('[sign:status] poll request failed', err);
           setStatusError(err instanceof Error ? err.message : String(err));
           timeoutId = setTimeout(poll, 6000);
         }
@@ -689,14 +690,14 @@ export function SigningWizard({
         // click that does nothing and shows nothing is the worst version of
         // this bug (the user asked for a status update and got no feedback
         // at all, not even an error).
-        console.error('[sign:status] manual sync failed', data);
+        console.warn('[sign:status] manual sync failed', data);
         setStatusError(data.message ?? 'status error');
         return;
       }
       setStatusError(null);
       setStatus(data.status);
     } catch (err) {
-      console.error('[sign:status] manual sync request failed', err);
+      console.warn('[sign:status] manual sync request failed', err);
       setStatusError(err instanceof Error ? err.message : String(err));
     }
   }, [signRequestId]);
@@ -1042,9 +1043,9 @@ export function SigningWizard({
                         <SignerConfigPanel value={signerConfig} onChange={setSignerConfig} />
                       </div>
 
-                      {(uploadError || submitError) && (
+                      {uploadError && (
                         <div className="rounded-md border border-error-border bg-error-bg px-3 py-2 text-sm text-error-text">
-                          {uploadError ?? submitError}
+                          {uploadError}
                         </div>
                       )}
                     </>
@@ -1421,6 +1422,17 @@ export function SigningWizard({
             setShowDownloadReminder(false);
           }}
           onDismiss={() => setShowDownloadReminder(false)}
+        />
+      )}
+
+      {submitError && (
+        <SignRequestErrorModal
+          message={submitError}
+          onRetry={() => {
+            setSubmitError(null);
+            void handleSubmit();
+          }}
+          onDismiss={() => setSubmitError(null)}
         />
       )}
 

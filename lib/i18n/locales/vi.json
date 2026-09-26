@@ -74,7 +74,11 @@
     "downloadSignedPdf": "Tải PDF đã ký",
     "page": "Trang",
     "startOver": "Bắt đầu phiên ký khác",
-    "close": "Đóng"
+    "close": "Đóng",
+    "retry": "Thử lại"
+  },
+  "signRequestError": {
+    "title": "Không thể gửi yêu cầu ký"
   },
   "upload": {
     "title": "Tải PDF",

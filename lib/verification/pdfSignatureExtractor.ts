@@ -1,4 +1,3 @@
-import { verifyDebug } from './debugLog';
 import { findByteRanges } from './findByteRanges';
 
 export type PdfSignatureExtractionError =
@@ -232,14 +231,6 @@ export function extractAllCmsFromSignedPdf(pdfBytes: Buffer): ExtractAllCmsResul
       };
     }
 
-    verifyDebug('extract:signature-found', {
-      rawByteRangeTokens: range,
-      parsedByteRange: byteRange,
-      subFilter: subFilterRaw,
-      cmsDerBytes: contents.cmsDer.length,
-      dictSigningTime: extractDictSigningTime(pdfBytes, scope),
-    });
-
     values.push({
       cmsDer: contents.cmsDer,
       byteRange,
@@ -254,11 +245,6 @@ export function extractAllCmsFromSignedPdf(pdfBytes: Buffer): ExtractAllCmsResul
     const leftEnd = left.byteRange[2] + left.byteRange[3];
     const rightEnd = right.byteRange[2] + right.byteRange[3];
     return leftEnd - rightEnd;
-  });
-
-  verifyDebug('extract:summary', {
-    signatureCount: values.length,
-    byteRangesInSignedOrder: values.map((v) => v.byteRange),
   });
 
   return { ok: true, values };

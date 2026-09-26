@@ -5,25 +5,12 @@ import { fetchCaIssuerCertificates } from './aiaCertFetcher';
 import { fixForgeString } from './fixForgeString';
 import { getAttributeLabel, shouldHideAttribute } from './certParser';
 import { parseCmsMessage } from './cmsAsn1';
-import { verifyDebug } from './debugLog';
 import { checkCrl, checkOcsp, type RevocationCheckResult } from './revocationChecker';
 
 /** Bound on how many hops `spliceDiscoveredIssuers` will walk in one chain --
  * just large enough for any real-world CA hierarchy, small enough to
  * guarantee termination even against a cyclic/malicious AIA response. */
 const MAX_PATH_BUILD_HOPS = 5;
-
-function certSummary(cert: forge.pki.Certificate): {
-  subject: string;
-  issuer: string;
-  serialNumber: string;
-} {
-  return {
-    subject: normalizeDn(cert.subject.attributes),
-    issuer: normalizeDn(cert.issuer.attributes),
-    serialNumber: cert.serialNumber || '',
-  };
-}
 
 export type ChainCertInfo = {
   index: number;
@@ -189,7 +176,6 @@ async function spliceDiscoveredIssuers(
 ): Promise<forge.pki.Certificate[]> {
   const extended = [...cmsCerts];
   const visited = new Set(extended.map((c) => derBytes(c)));
-  const spliced: Array<ReturnType<typeof certSummary> & { source: 'root-store' | 'aia' }> = [];
 
   for (let hop = 0; hop < MAX_PATH_BUILD_HOPS; hop += 1) {
     const last = extended[extended.length - 1];
@@ -208,18 +194,12 @@ async function spliceDiscoveredIssuers(
       if (visited.has(fp)) break;
       visited.add(fp);
       extended.push(rootMatch);
-      spliced.push({ ...certSummary(rootMatch), source: 'root-store' });
       continue;
     }
 
     const outcome = await fetchCaIssuerCertificates(last);
     const candidate = outcome.certs.find((c) => normalizeDn(c.subject.attributes) === issuerKey);
     if (!candidate) {
-      verifyDebug('chain:aia-fetch-no-candidate', {
-        neededIssuer: issuerKey,
-        triedUrl: outcome.url,
-        error: outcome.error,
-      });
       break;
     }
 
@@ -227,11 +207,6 @@ async function spliceDiscoveredIssuers(
     if (visited.has(fp)) break;
     visited.add(fp);
     extended.push(candidate);
-    spliced.push({ ...certSummary(candidate), source: 'aia' });
-  }
-
-  if (spliced.length > 0) {
-    verifyDebug('chain:spliced-discovered-issuers', { spliced });
   }
 
   return extended;
@@ -264,10 +239,6 @@ export async function verifyCertificateChainFromCmsBuffer(
       return null;
     }
 
-    verifyDebug('chain:certs-from-cms', {
-      certs: certs.map((c, index) => ({ index, ...certSummary(c) })),
-    });
-
     // The chain -- with the signer's own leaf certificate at index 0, per
     // node-forge's convention -- is checked against the SIGNING time (when
     // given), not "now": a signature must stay valid forever once the
@@ -285,7 +256,6 @@ export async function verifyCertificateChainFromCmsBuffer(
 
     if (!trustStore.isConfigured()) {
       error = 'Trust store is not configured on the server';
-      verifyDebug('chain:trust-store', { configured: false });
     } else {
       const trustedPems = trustStore.getTrustedRootPems();
       trustedRootCerts = trustedPems
@@ -297,12 +267,6 @@ export async function verifyCertificateChainFromCmsBuffer(
           }
         })
         .filter((c): c is forge.pki.Certificate => c !== null);
-
-      verifyDebug('chain:trust-store', {
-        configured: true,
-        bundledRoots: trustedRootCerts.map((c) => certSummary(c)),
-        validityCheckDate: (validityCheckDate ?? new Date()).toISOString(),
-      });
 
       certsForChain = await spliceDiscoveredIssuers(certs, trustedRootCerts);
 
@@ -344,8 +308,6 @@ export async function verifyCertificateChainFromCmsBuffer(
       }
     }
 
-    verifyDebug('chain:forge-verify-result', { valid, error, rootNotInTrustStore });
-
     let displayCerts: forge.pki.Certificate[] = certsForChain;
 
     if (valid) {
@@ -362,10 +324,6 @@ export async function verifyCertificateChainFromCmsBuffer(
         if (anchorIsSelfSigned) {
           const anchorPem = forge.pki.certificateToPem(anchoringRoot);
           const isTrustedRootByteExact = trustStore.isTrustedRoot(anchorPem);
-          verifyDebug('chain:anchor-root-recheck', {
-            anchoringRoot: certSummary(anchoringRoot),
-            isTrustedRootByteExact,
-          });
           if (!isTrustedRootByteExact) {
             valid = false;
             rootNotInTrustStore = true;
@@ -413,19 +371,8 @@ export async function verifyCertificateChainFromCmsBuffer(
       chain[index]!.crl = crl;
     }
 
-    verifyDebug('chain:final-result', {
-      valid,
-      error,
-      rootNotInTrustStore,
-      certificateExpiredNow,
-      chainLength: chain.length,
-    });
-
     return { valid, error, chain, rootNotInTrustStore, certificateExpiredNow };
-  } catch (error) {
-    verifyDebug('chain:exception', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return null;
   }
 }

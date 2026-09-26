@@ -3,7 +3,6 @@ import * as pkijs from 'pkijs';
 import { parseCertFile } from '../trustStore/certBundleLoader';
 import { getCachedAiaCerts, setCachedAiaCerts } from './aiaCertCache';
 import { toPkijsCertificate } from './revocationChecker';
-import { verifyDebug } from './debugLog';
 import { fetchBytesWithGuards, isAddressAllowed, type FetchGuards } from './guardedFetch';
 
 export { fetchBytesWithGuards, isAddressAllowed, type FetchGuards };
@@ -98,8 +97,7 @@ export async function fetchCaIssuerCertificates(
   try {
     pkijsCert = toPkijsCertificate(cert);
     urls = findAllAiaUrls(pkijsCert, pkijs.id_ad_caIssuers);
-  } catch (error) {
-    verifyDebug('chain:aia-parse-error', { error: error instanceof Error ? error.message : String(error) });
+  } catch {
     return { certs: [], url: null };
   }
   if (urls.length === 0) return { certs: [], url: null };
@@ -115,11 +113,9 @@ export async function fetchCaIssuerCertificates(
     for (const url of candidateUrls) {
       const cached = getCachedAiaCerts(url);
       if (cached) {
-        verifyDebug('chain:aia-cache-hit', { url, certCount: cached.length });
         return { certs: cached, url };
       }
 
-      verifyDebug('chain:aia-fetch-attempt', { url });
       try {
         const bytes = await fetchBytesWithGuards(url, {
           timeoutMs: AIA_FETCH_TIMEOUT_MS,
@@ -129,14 +125,12 @@ export async function fetchCaIssuerCertificates(
         });
         const certs = parseCertFile(Buffer.from(bytes));
         if (certs.length > 0) {
-          verifyDebug('chain:aia-fetch-result', { url, certCount: certs.length });
           setCachedAiaCerts(url, certs);
           return { certs, url };
         }
         lastError = 'response contained no parseable certificates';
       } catch (error) {
         lastError = error instanceof Error ? error.message : String(error);
-        verifyDebug('chain:aia-fetch-error', { url, error: lastError });
       }
     }
   }

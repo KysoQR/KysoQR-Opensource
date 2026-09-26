@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import forge from 'node-forge';
 import { parseCmsMessage } from './cmsAsn1';
-import { verifyDebug } from './debugLog';
 
 export type PdfContentDigestCheckResult =
   { ok: true; reason?: undefined } | { ok: false; reason: string };
@@ -195,7 +194,6 @@ export function verifyPdfContentDigest(
       // `signatureVerifier.ts`'s direct signature-over-content-hash check
       // (its "no signedAttrs" branch signs this exact same ByteRange-hashed
       // content directly), not a second, independent comparison here.
-      verifyDebug('content-digest:no-signed-attrs-skip', {});
       return { ok: true };
     }
     if (!expectedDigest) {
@@ -208,23 +206,13 @@ export function verifyPdfContentDigest(
     const computed = hasher.digest();
 
     const matches = computed.equals(expectedDigest);
-    verifyDebug('content-digest:compare', {
-      digestAlgorithm,
-      byteRangeHashed: [a, b, c, d],
-      messageDigestClaimedByCms: expectedDigest.toString('hex'),
-      freshlyComputedFromPdfBytes: computed.toString('hex'),
-      matches,
-    });
 
     if (!matches) {
       return { ok: false, reason: 'CONTENT_DIGEST_MISMATCH' };
     }
 
     return { ok: true };
-  } catch (error) {
-    verifyDebug('content-digest:exception', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return { ok: false, reason: 'DIGEST_VERIFICATION_ERROR' };
   }
 }

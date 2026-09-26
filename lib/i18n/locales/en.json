@@ -74,7 +74,11 @@
     "downloadSignedPdf": "Download Signed PDF",
     "page": "Page",
     "startOver": "Start another signing",
-    "close": "Close"
+    "close": "Close",
+    "retry": "Try again"
+  },
+  "signRequestError": {
+    "title": "Couldn't send the signing request"
   },
   "upload": {
     "title": "Upload PDF",

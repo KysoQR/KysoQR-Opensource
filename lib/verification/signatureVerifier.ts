@@ -1,9 +1,6 @@
 import { createHash } from 'node:crypto';
 import forge from 'node-forge';
-import { parseCertificateInfo } from './certParser';
 import { parseCmsMessage } from './cmsAsn1';
-import { verifyDebug } from './debugLog';
-import { fixForgeString } from './fixForgeString';
 
 export type SignatureVerificationFailureReason =
   | 'MISSING_SIGNER_INFO'
@@ -88,16 +85,14 @@ function isUniversal(node: Asn1Node | undefined, type: number): boolean {
  * found by tag rather than position.
  */
 function parseSignerInfoFields(signerInfo: Asn1Node): {
-  version: Asn1Node | undefined;
   issuerAndSerialNumber: Asn1Node | undefined;
   digestAlgorithm: Asn1Node | undefined;
   authenticatedAttributes: Asn1Node | undefined;
-  digestEncryptionAlgorithm: Asn1Node | undefined;
   signature: Asn1Node | undefined;
 } {
   const children = Array.isArray(signerInfo.value) ? (signerInfo.value as Asn1Node[]) : [];
 
-  const version = children[0];
+  // children[0] is `version` (INTEGER) -- always present, not needed by any caller.
   const issuerAndSerialNumber = children[1];
   const digestAlgorithm = children[2];
 
@@ -108,11 +103,11 @@ function parseSignerInfoFields(signerInfo: Asn1Node): {
     cursor += 1;
   }
 
-  // digestEncryptionAlgorithm's OID isn't needed for verification itself --
-  // forge's RSASSA-PKCS1-v1.5 verify reads the real digest algorithm back out
-  // of the decrypted DigestInfo itself -- but the node is still returned so
-  // the debug dump below can show it.
-  const digestEncryptionAlgorithm = children[cursor];
+  // digestEncryptionAlgorithm (SEQUENCE) sits here -- its OID isn't needed
+  // for verification itself (forge's RSASSA-PKCS1-v1.5 verify reads the real
+  // digest algorithm back out of the decrypted DigestInfo itself), but the
+  // cursor must still advance past it so `signature` below is read from the
+  // correct position.
   cursor += 1;
 
   const signature = isUniversal(children[cursor], forge.asn1.Type.OCTETSTRING)
@@ -120,59 +115,11 @@ function parseSignerInfoFields(signerInfo: Asn1Node): {
     : undefined;
 
   return {
-    version,
     issuerAndSerialNumber,
     digestAlgorithm,
     authenticatedAttributes,
-    digestEncryptionAlgorithm,
     signature,
   };
-}
-
-/** OID -> human-readable name, for whatever forge already knows (falls back
- * to the raw OID string). */
-function oidName(oid: string): string {
-  return forge.pki.oids[oid] || oid;
-}
-
-function algorithmIdentifierForLog(node: Asn1Node | undefined): { oid: string; name: string } | null {
-  const oidNode = Array.isArray(node?.value) ? (node.value[0] as Asn1Node) : undefined;
-  if (!oidNode || typeof oidNode.value !== 'string') return null;
-  const oid = forge.asn1.derToOid(oidNode.value);
-  return { oid, name: oidName(oid) };
-}
-
-/** Decode one `Attribute` from `authenticatedAttributes` into a printable
- * {oid, name, value} for debug logging -- generic over whichever attributes
- * a given signer included (contentType, messageDigest, signingTime, and any
- * signer-specific extras), not just the ones this module actually reads. */
-function decodeAttributeForLog(attr: Asn1Node): { oid: string; name: string; value: string } {
-  const children = Array.isArray(attr.value) ? (attr.value as Asn1Node[]) : [];
-  const oidNode = children[0];
-  const oid =
-    oidNode && typeof oidNode.value === 'string' ? forge.asn1.derToOid(oidNode.value) : 'unknown';
-  const name = oidName(oid);
-
-  const valueSet = children[1];
-  const inner = Array.isArray(valueSet?.value) ? (valueSet.value[0] as Asn1Node | undefined) : undefined;
-
-  let value = '(unparseable)';
-  if (inner && typeof inner.value === 'string') {
-    if (name === 'messageDigest') {
-      value = forge.util.createBuffer(inner.value).toHex();
-    } else if (
-      isUniversal(inner, forge.asn1.Type.UTCTIME) ||
-      isUniversal(inner, forge.asn1.Type.GENERALIZEDTIME)
-    ) {
-      value = inner.value; // raw ASN.1 time string, e.g. YYMMDDHHMMSSZ
-    } else if (isUniversal(inner, forge.asn1.Type.OID)) {
-      value = forge.asn1.derToOid(inner.value);
-    } else {
-      value = fixForgeString(inner.value);
-    }
-  }
-
-  return { oid, name, value };
 }
 
 function findLeafCertificate(
@@ -255,30 +202,10 @@ export function verifySignerInfoSignature(
     }
 
     const signerInfo = signerInfos[0] as Asn1Node;
-    const {
-      version,
-      issuerAndSerialNumber,
-      digestAlgorithm,
-      authenticatedAttributes,
-      digestEncryptionAlgorithm,
-      signature,
-    } = parseSignerInfoFields(signerInfo);
+    const { issuerAndSerialNumber, digestAlgorithm, authenticatedAttributes, signature } =
+      parseSignerInfoFields(signerInfo);
 
     const hasSignedAttrs = !!authenticatedAttributes;
-
-    verifyDebug('signature:cms-full-dump', {
-      signerInfoVersion:
-        version && typeof version.value === 'string'
-          ? forge.util.createBuffer(version.value).toHex()
-          : null,
-      digestAlgorithm: algorithmIdentifierForLog(digestAlgorithm),
-      digestEncryptionAlgorithm: algorithmIdentifierForLog(digestEncryptionAlgorithm),
-      authenticatedAttributes:
-        authenticatedAttributes && Array.isArray(authenticatedAttributes.value)
-          ? (authenticatedAttributes.value as Asn1Node[]).map(decodeAttributeForLog)
-          : null,
-      signatureLengthBytes: typeof signature?.value === 'string' ? signature.value.length : null,
-    });
 
     if (!signature || typeof signature.value !== 'string') {
       return { ok: false, reason: 'MISSING_SIGNATURE' };
@@ -297,47 +224,12 @@ export function verifySignerInfoSignature(
     const digestAlgorithmName = digestAlgorithmOid
       ? allowedDigestAlgorithms[digestAlgorithmOid]
       : undefined;
-    verifyDebug('signature:digest-algorithm', {
-      oidFound: digestAlgorithmOid,
-      accepted: digestAlgorithmName ?? null,
-      hasSignedAttrs,
-      rule: hasSignedAttrs
-        ? 'signedAttrs present -- must resolve to sha256/sha384/sha512 -- anything else (incl. sha1/md5) is rejected here'
-        : 'no signedAttrs (legacy variant) -- sha256/sha384/sha512 or sha1 accepted (see LEGACY_NO_SIGNED_ATTRS_DIGEST_ALGORITHMS)',
-    });
     if (!digestAlgorithmName) {
       return { ok: false, reason: 'WEAK_OR_UNSUPPORTED_DIGEST_ALGORITHM' };
     }
 
     const certs = (p7 as unknown as { certificates?: forge.pki.Certificate[] }).certificates ?? [];
-    const children = Array.isArray(issuerAndSerialNumber?.value)
-      ? (issuerAndSerialNumber.value as Asn1Node[])
-      : [];
-    const serialNode = children[1];
-    const wantedSerialHex =
-      serialNode && typeof serialNode.value === 'string'
-        ? forge.util.createBuffer(serialNode.value).toHex().toLowerCase()
-        : undefined;
     const leafCert = findLeafCertificate(certs, issuerAndSerialNumber);
-    verifyDebug('signature:leaf-certificate-lookup', {
-      serialNumberFromSignerInfo: wantedSerialHex,
-      certsAvailableInCms: certs.map((c) => {
-        const info = parseCertificateInfo(c);
-        return {
-          subject: info.subjectFull,
-          issuer: info.issuerFull,
-          serialNumber: c.serialNumber,
-          validFrom: info.validFrom.toISOString(),
-          validTo: info.validTo.toISOString(),
-        };
-      }),
-      matchedLeaf: leafCert
-        ? {
-            subject: parseCertificateInfo(leafCert).subjectFull,
-            serialNumber: leafCert.serialNumber,
-          }
-        : null,
-    });
     if (!leafCert) {
       return { ok: false, reason: 'LEAF_CERTIFICATE_NOT_FOUND' };
     }
@@ -348,28 +240,12 @@ export function verifySignerInfoSignature(
       digest = createHash(digestAlgorithmName)
         .update(Buffer.from(signedAttrsDer, 'binary'))
         .digest();
-      verifyDebug('signature:digest-to-verify', {
-        mode: 'signedAttrs',
-        signedAttributesDerBytes: signedAttrsDer.length,
-        computedDigestHex: digest.toString('hex'),
-        rawSignatureBytes: signature.value.length,
-        willCompareAgainst:
-          "the DigestInfo forge decrypts out of `signature` using the leaf's public key",
-      });
     } else {
       const [a, b, c, d] = byteRange;
       digest = createHash(digestAlgorithmName)
         .update(pdfBytes.subarray(a, a + b))
         .update(pdfBytes.subarray(c, c + d))
         .digest();
-      verifyDebug('signature:digest-to-verify', {
-        mode: 'directContentDigest (no signedAttrs)',
-        byteRangeHashed: byteRange,
-        computedDigestHex: digest.toString('hex'),
-        rawSignatureBytes: signature.value.length,
-        willCompareAgainst:
-          "the DigestInfo forge decrypts out of `signature` using the leaf's public key",
-      });
     }
 
     // node-forge (and this whole pipeline) only ever parses RSA certificates
@@ -378,16 +254,12 @@ export function verifySignerInfoSignature(
     // upstream, not an unchecked assumption.
     const publicKey = leafCert.publicKey as forge.pki.rsa.PublicKey;
     const verified = publicKey.verify(digest.toString('binary'), signature.value);
-    verifyDebug('signature:rsa-verify-result', { verified, hasSignedAttrs });
     if (!verified) {
       return { ok: false, reason: 'SIGNATURE_VERIFICATION_FAILED', leafCertificate: leafCert };
     }
 
     return { ok: true, leafCertificate: leafCert };
-  } catch (error) {
-    verifyDebug('signature:exception', {
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return { ok: false, reason: 'SIGNATURE_VERIFICATION_ERROR' };
   }
 }

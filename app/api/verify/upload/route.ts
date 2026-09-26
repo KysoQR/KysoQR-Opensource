@@ -2,7 +2,6 @@ import { MAX_UPLOAD_SIZE_MB } from '@/components/signing/constants';
 import { isValidPdfUpload } from '@/lib/pdfValidation';
 import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
 import { getTrustStore } from '@/lib/trustStore/getTrustStore';
-import { verifyDebug } from '@/lib/verification/debugLog';
 import { verifyPdfSignatures } from '@/lib/verification/verifyPdfSignatures';
 
 export const runtime = 'nodejs';
@@ -60,15 +59,8 @@ export async function POST(request: Request): Promise<Response> {
     return badRequest('INVALID_PDF', 'Uploaded file is not a valid PDF');
   }
 
-  verifyDebug('route:request-in', {
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.type,
-  });
-
   try {
     const signatures = await verifyPdfSignatures(buffer, getTrustStore());
-    verifyDebug('route:response-out', { signatures });
     return Response.json({ signatures });
   } catch {
     // Fail closed: an unexpected error verifying an untrusted upload must

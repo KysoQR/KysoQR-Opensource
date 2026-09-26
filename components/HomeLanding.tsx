@@ -119,7 +119,7 @@ export function HomeLanding({ onFileAccepted }: { onFileAccepted: (file: File) =
       const blob = await downloadSignedPdfBlob(entry.identityKey);
       triggerBlobDownload(blob, entry.name);
     } catch (err) {
-      console.error('[home] recent-signature download failed', err);
+      console.warn('[home] recent-signature download failed', err);
       setRecentDownloadError(t('home.recentSignatures.downloadError'));
     } finally {
       setDownloadingCode(null);

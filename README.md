@@ -1,8 +1,10 @@
 *[Đọc bằng tiếng Việt](README.vi.md)*
 
-# KysoQR CE / Xsign-Opensource
+# KysoQR 
 
 PDF e-signing via QR code (CAS e-signing) and digital signature verification — open source, **a single, fully stateless Next.js application**.
+
+**Try it live:** [xsign-outsource.duy-nguyen1010fight.workers.dev](https://xsign-outsource.duy-nguyen1010fight.workers.dev/) — no need to clone/install anything just to see how it works.
 
 ## What is KysoQR Opensource?
 
@@ -10,10 +12,73 @@ KysoQR is a digital signing and signature verification application, aiming to be
 
 Once deployed, a business's signing process looks like this:
 
-- Sign up on **Cas ID** (download from the App Store or Google Play) to register a personal digital signature (currently free).
+- Sign up on **Cas ID** (download from the App Store or Google Play) to register a personal digital signature (currently free) — see the step-by-step walkthrough below.
 - Upload the document to the KysoQR app.
 - Configure the signing session (signer and signature position) and click "Sign".
 - Scan the QR code with Cas ID to complete the signing session.
+
+### Registering a digital certificate on Cas ID
+
+Cas ID has two separate guided flows depending on account type. Screenshots below are from Cas ID's own registration flow ([cas.so/cas-id/chu-ky-so](https://cas.so/cas-id/chu-ky-so/)).
+
+#### Individual / Household business — 7 steps
+
+![Cas ID individual/household-business registration walkthrough](public/cas-id-registration-individual.gif)
+
+1. **Add a digital asset** — start the flow.
+   - On the Cas ID home screen, tap the **[+]** icon to add a new link.
+   - Select the **Individual / Household business** tab.
+   - Tap **Add a digital asset**.
+2. **Choose a service** — pick the service to connect.
+   - The system shows a list of account/service types.
+   - Find and select **Digital certificate**.
+3. **Choose a plan** — pick a subscription plan.
+   - On the "Add digital certificate" screen, tap **CLAIM NOW** on the promo banner.
+   - Choose a suitable plan (e.g. 3-month plan — free, or a 1-year plan).
+   - Agree to the terms of service, then tap **Continue**.
+4. **Signature** — create your e-signature sample.
+   - Draw or sign directly with your finger in the white box on screen.
+   - Tap **Continue** to move to the next step.
+5. **Identity verification** — confirm sharing identity information.
+   - Review the personal info synced from eKYC: full name, ID number, address.
+   - Check the box confirming you've read and understood the data-sharing purpose.
+   - Tap **Confirm**.
+6. **Payment** — pay for the plan.
+   - On the payment details screen, enter a discount code if you have one, and review the unit price, tax, and total.
+   - If you need a VAT invoice, turn on invoice issuance and fill in the recipient's details.
+   - Tap **Complete order**, then pay via bank transfer or by scanning the QR code with your mobile banking app.
+7. **Activation** — confirm certificate activation.
+   - Review the certificate details: issuer, owner, serial number, expiry date.
+   - Tap **Confirm activation now**.
+   - The system shows "Activated successfully" — you're done.
+
+#### Enterprise — 6 steps
+
+![Cas ID enterprise registration walkthrough](public/cas-id-registration-enterprise.gif)
+
+1. **Start** — initialize & choose a plan.
+   - On the Cas ID home screen, tap **[+]** → select the **Enterprise** tab → **Add a digital asset**.
+   - Select the business to register (or verify an additional business). The person performing this must be the business's legal representative.
+   - Select **Digital certificate**, tap **Register now** on the Intrust banner, choose a plan, and tap **Continue**.
+2. **Profile** — fill in the registration request.
+   - Review the synced business info: tax code, name, address, tax-code status.
+   - Upload the business license (PDF/DOCX/JPG/PNG, max 2MB) and enter an email to receive updates.
+   - Agree to the data-use terms for certificate issuance and the Intrust CA Agreement, then **Confirm**.
+3. **eKYC** — verify identity via eKYC.
+   - Tap **Start**; photograph the front and back of your chip-based ID card within the on-screen frame.
+   - Tap the back of your ID card against the NFC area, hold steady, then complete face verification.
+   - Once the system reports a match, tap **Complete** to submit the request.
+4. **Payment** — pay for the plan.
+   - Once the application is approved, open the notification in Cas ID (status: awaiting payment).
+   - Enter a discount code if you have one; issue a VAT invoice if needed.
+   - Pay via bank transfer or by scanning a mobile-banking QR code.
+5. **OTP & PIN** — activate & set your signing PIN.
+   - Status changes to "awaiting activation" — tap **Continue**.
+   - Enter the 6-digit OTP sent to the registered phone number.
+   - Create a 6-digit signing PIN and re-enter it to confirm.
+6. **Done** — registration complete.
+   - The system shows "Registration successful."
+   - The Intrust CA certificate is now linked to the business's profile in Cas ID and ready for remote digital signing.
 
 ## Why use this app to roll out digital signing for a business?
 
@@ -50,8 +115,8 @@ KysoQR **does not sign documents itself** — the actual signing (holding the pr
 ### 1. Local — personal machine, development/testing
 
 ```bash
-git clone https://github.com/KysoQR/KysoQR-Opensource.git
-cd KysoQR-Opensource
+git clone https://github.com/KysoQR/KysoQR
+cd KysoQR
 npm install
 cp .env.example .env
 npm run dev
